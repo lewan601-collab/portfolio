@@ -14,7 +14,15 @@
         .section-title { font-size: 1.5rem; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 24px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
         .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 200px; object-fit: cover; background-color: #cbd5e1; }
+        
+        /* ปรับปรุงสัดส่วนรูปภาพให้เท่ากันทุกการ์ด */
+        .card img { 
+            width: 100%; 
+            aspect-ratio: 16/9; 
+            object-fit: cover; 
+            background-color: #cbd5e1; 
+        }
+        
         .card-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
         .badge { display: inline-block; align-self: flex-start; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; margin-bottom: 12px; text-transform: uppercase; }
         .badge.web { background-color: #dbeafe; color: #1e40af; }
@@ -39,8 +47,8 @@
 </div>
 
 <script>
-// ⚠️ ใส่ลิงก์ Web App URL เดียวกันกับในหน้าฟอร์มครับ
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyv0zTkurPGWyv8zyISBPw2fjoqh0EQNNax1KZGQvGAet3RCyj7Nn7Cxn0OEz3qWB9a/exec"; 
+// ลิงก์ Web App จาก Google Apps Script ของคุณ
+let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyv0zTkurPGWyv8zyISBPw2fjoqh0EQNNax1KZGQvGAet3RCyj7Nn7Cxn0OEz3qWB9a/exec"; 
 
 function loadPortfolio() {
     fetch(WEB_APP_URL)
@@ -55,7 +63,7 @@ function loadPortfolio() {
             return;
         }
 
-        // วนลูปแสดงผลจากแถวใหม่ล่าสุดขึ้นก่อน (Reverse Array)
+        // วนลูปแสดงผลจากแถวใหม่ล่าสุดขึ้นก่อน
         data.reverse().forEach(item => {
             const badgeClass = item.category === 'web' ? 'badge web' : (item.category === 'research' ? 'badge research' : 'badge other');
             const categoryText = item.category === 'web' ? 'Web Application' : (item.category === 'research' ? 'Research & Innovation' : 'Other');
