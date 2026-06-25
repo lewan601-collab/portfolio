@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คลังพอร์ตโฟลิโอและรายงานผลงานสาธารณะ</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; margin: 0; padding: 0; color: #334155; }
+        .header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 60px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 2.5rem; font-weight: 600; }
+        .header p { margin: 10px 0 0 0; color: #94a3b8; font-size: 1.1rem; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .section-title { font-size: 1.5rem; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 24px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .card img { width: 100%; height: 200px; object-fit: cover; background-color: #cbd5e1; }
+        .card-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+        .badge { display: inline-block; align-self: flex-start; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; margin-bottom: 12px; text-transform: uppercase; }
+        .badge.web { background-color: #dbeafe; color: #1e40af; }
+        .badge.research { background-color: #fef3c7; color: #92400e; }
+        .badge.other { background-color: #e2e8f0; color: #475569; }
+        .card-title { margin: 0 0 8px 0; font-size: 1.25rem; color: #0f172a; }
+        .card-text { margin: 0; color: #64748b; font-size: 0.95rem; line-height: 1.5; }
+        .loading { text-align: center; font-size: 1.2rem; color: #64748b; margin-top: 40px; }
+    </style>
+</head>
+<body>
 
+<div class="header">
+    <h1>คลังพอร์ตโฟลิโอและรายงานผลงานสาธารณะ</h1>
+    <p>อัปเดตระบบสารสนเทศและนวัตกรรมงานวิจัยแบบเรียลไทม์</p>
+</div>
+
+<div class="container">
+    <h2 class="section-title">ผลงานรายงานล่าสุด</h2>
+    <div id="loading-text" class="loading">🔄 กำลังโหลดข้อมูลผลงานจากฐานข้อมูล...</div>
+    <div class="grid" id="portfolio-grid"></div>
+</div>
+
+<script>
+// ⚠️ ใส่ลิงก์ Web App URL เดียวกันกับในหน้าฟอร์มครับ
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyv0zTkurPGWyv8zyISBPw2fjoqh0EQNNax1KZGQvGAet3RCyj7Nn7Cxn0OEz3qWB9a/exec"; 
+
+function loadPortfolio() {
+    fetch(WEB_APP_URL)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('loading-text').style.display = 'none';
+        const grid = document.getElementById('portfolio-grid');
+        grid.innerHTML = ""; // ล้างค่าเก่า
+        
+        if(data.length === 0) {
+            grid.innerHTML = "<p>ยังไม่มีข้อมูลผลงานจัดแสดงในขณะนี้</p>";
+            return;
+        }
+
+        // วนลูปแสดงผลจากแถวใหม่ล่าสุดขึ้นก่อน (Reverse Array)
+        data.reverse().forEach(item => {
+            const badgeClass = item.category === 'web' ? 'badge web' : (item.category === 'research' ? 'badge research' : 'badge other');
+            const categoryText = item.category === 'web' ? 'Web Application' : (item.category === 'research' ? 'Research & Innovation' : 'Other');
+            
+            const cardHTML = `
+                <div class="card">
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="card-content">
+                        <span class="${badgeClass}">${categoryText}</span>
+                        <h3 class="card-title">${item.title}</h3>
+                        <p class="card-text">${item.description}</p>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += cardHTML;
+        });
+    })
+    .catch(err => {
+        document.getElementById('loading-text').innerText = "❌ เกิดข้อผิดพลาดในการโหลดข้อมูล";
+        console.error(err);
+    });
+}
+
+// สั่งให้โหลดข้อมูลทันทีเมื่อเปิดหน้าเว็บ
+window.onload = loadPortfolio;
+</script>
+
+</body>
+</html>
